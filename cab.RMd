@@ -1,0 +1,47 @@
+---
+title: "barometer"
+author: "Eltone Mabodo"
+date: "11/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Current Account Balance. Loading Data and Libraries
+```{r}
+library(tidyverse)
+library(haven)
+library(readxl)
+library(ggthemes)
+```
+
+## Loading Data
+```{r}
+data <- read_xlsx("CAB data.xlsx") %>% 
+  mutate(country = as_factor(Country))
+```
+
+## Plotting the graph
+```{r}
+g1 <- data %>% ggplot(aes(x = Year, y = `CA Balance`))+
+  geom_point(color = "#39a459", size = 1.85)+
+  geom_line(color = "#8855dd", size = 1.25)+
+  theme_bw()+
+  facet_wrap( ~country)+
+  labs(x= "\nYear (2019 - 2022)",
+       y = "CAB (%)\n",
+       title = "Zim Current Account Balance\n (% of GDP) vs selected regions\n",
+       caption = "Source: ZEPARU, data from IMF")+
+  theme(panel.spacing = unit(1.25, "lines"),
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        plot.caption = element_text(hjust = 0, face = "italic"),
+        text = element_text(family = "TT"))
+```
+
+## save the graph
+```{r}
+ggsave("ca_balances_graph.png", g1, height = 3, width = 4, units = "in", dpi = 500)
+```
+
